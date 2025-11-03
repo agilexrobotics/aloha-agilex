@@ -1609,10 +1609,10 @@ def get_arguments():
                         required=False)
     parser.add_argument('--gripper_offset', nargs='+', action='store', type=float, help='gripper_offset', default=[0], required=False)
 
-    parser.add_argument('--use_camera_color', action='store', type=bool, help='use_camera_color', default=False, required=False)
-    parser.add_argument('--use_camera_depth', action='store', type=bool, help='use_camera_depth', default=False, required=False)
+    parser.add_argument('--use_camera_color', action='store', type=bool, help='use_camera_color', default=True, required=False)
+    parser.add_argument('--use_camera_depth', action='store', type=bool, help='use_camera_depth', default=True, required=False)
     parser.add_argument('--camera_depth_norm_mode', action='store', type=int, help='camera_depth_norm_mode', default=3, required=False)
-    parser.add_argument('--use_camera_point_cloud', action='store', type=bool, help='use_camera_point_cloud', default=True, required=False)
+    parser.add_argument('--use_camera_point_cloud', action='store', type=bool, help='use_camera_point_cloud', default=False, required=False)
     parser.add_argument('--use_camera_point_cloud_rgb', action='store', type=bool, help='use_camera_point_cloud_rgb', default=True, required=False)
     parser.add_argument('--camera_point_cloud_norm_mode', action='store', type=int, help='camera_point_cloud_norm_mode', default=3, required=False)
     parser.add_argument('--use_robot_base', action='store', type=int, help='use_robot_base', default=0, required=False)
