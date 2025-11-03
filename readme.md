@@ -1,6 +1,7 @@
 
 # ALOHA
 Referencing https://github.com/MarkFzp/mobile-aloha.git, For more details, please refer to this link.
+Data collection method reference: https://github.com/agilexrobotics/data_tools
 ## Installation
 ubuntu22.04 + cuda12.8
 ```bash
