@@ -269,7 +269,7 @@ def get_arguments():
     parser.add_argument('--pretrain_ckpt_path', action='store', type=str, help='pretrain_ckpt_path', default='', required=False)
     parser.add_argument('--ckpt_name', action='store', type=str, help='ckpt_name', default='policy_best.ckpt', required=False)
     parser.add_argument('--ckpt_stats_name', action='store', type=str, help='ckpt_stats_name', default='dataset_stats.pkl', required=False)
-    parser.add_argument('--policy_class', action='store', type=str, help='policy_class, capitalize, ACT, Diffusion, RT', default='RT', required=False)
+    parser.add_argument('--policy_class', action='store', type=str, help='policy_class, capitalize, ACT, Diffusion, RT', default='ACT', required=False)
     parser.add_argument('--train_batch_size', action='store', type=int, help='train_batch_size', default=32, required=False)
     parser.add_argument('--val_batch_size', action='store', type=int, help='val_batch_size', default=32, required=False)
     parser.add_argument('--train_ratio', action='store', type=float, help='train_ratio', default=0.9, required=False)
