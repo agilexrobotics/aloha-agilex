@@ -1388,7 +1388,7 @@ def get_arguments():
                         required=False)
     parser.add_argument('--ckpt_stats_name', action='store', type=str, help='ckpt_stats_name',
                         default='dataset_stats.pkl', required=False)
-    parser.add_argument('--policy_class', action='store', type=str, help='policy_class, capitalize', default='RT',
+    parser.add_argument('--policy_class', action='store', type=str, help='policy_class, capitalize', default='ACT',
                         required=False)
     parser.add_argument('--batch_size', action='store', type=int, help='batch_size', default=8, required=False)
     parser.add_argument('--seed', action='store', type=int, help='seed', default=0, required=False)
