@@ -1349,38 +1349,38 @@ class RosOperator(Node):
         for i in range(len(self.args.camera_color_names)):
             closer_time_diff = math.inf
             while (self.camera_color_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.camera_color_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.camera_color_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.camera_color_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 camera_colors[i] = self.camera_color_deques[i].popleft()
         for i in range(len(self.args.camera_depth_names)):
             closer_time_diff = math.inf
             while (self.camera_depth_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.camera_depth_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.camera_depth_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.camera_depth_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 camera_depths[i] = self.camera_depth_deques[i].popleft()
         if not self.args.use_camera_color_depth_to_point_cloud:
             for i in range(len(self.args.camera_point_cloud_names)):
                 closer_time_diff = math.inf
                 while (self.camera_point_cloud_deques[i].size() > 0 and
-                    abs(rclpy.time.Time.from_msg(self.camera_point_cloud_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                    abs(rclpy.time.Time.from_msg(self.camera_point_cloud_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                     closer_time_diff = abs(rclpy.time.Time.from_msg(self.camera_point_cloud_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                     camera_point_clouds[i] = self.camera_point_cloud_deques[i].popleft()
         for i in range(len(self.args.arm_joint_state_names)):
             closer_time_diff = math.inf
             while (self.arm_joint_state_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.arm_joint_state_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.arm_joint_state_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.arm_joint_state_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 arm_joint_states[i] = self.arm_joint_state_deques[i].popleft()
         for i in range(len(self.args.arm_end_pose_names)):
             closer_time_diff = math.inf
             while (self.arm_end_pose_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.arm_end_pose_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.arm_end_pose_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.arm_end_pose_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 arm_end_poses[i] = self.arm_end_pose_deques[i].popleft()
         for i in range(len(self.args.robot_base_vel_names)):
             closer_time_diff = math.inf
             while (self.robot_base_vel_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.robot_base_vel_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.robot_base_vel_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.robot_base_vel_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 robot_base_vels[i] = self.robot_base_vel_deques[i].popleft()
 
@@ -1576,7 +1576,7 @@ def get_arguments():
                         default=['left', 'right'],
                         required=False)
     parser.add_argument('--arm_joint_state_topics', action='store', type=str, help='arm_joint_state_topics',
-                        default=['/puppet/joint_left', '/puppet/joint_right'],
+                        default=['/joint_states_single_l', '/joint_states_single_r'],
                         required=False)
     parser.add_argument('--arm_end_pose_names', action='store', type=str, help='arm_end_pose_names',
                         default=[],
@@ -1591,7 +1591,7 @@ def get_arguments():
                         default=[],
                         required=False)
     parser.add_argument('--arm_joint_state_ctrl_topics', action='store', type=str, help='arm_joint_state_ctrl_topics',
-                        default=['/joint_left_states', '/joint_right_states'],
+                        default=['/joint_states_l', '/joint_states_r'],
                         required=False)
     parser.add_argument('--arm_end_pose_ctrl_topics', action='store', type=str, help='arm_end_pose_ctrl_topics',
                         default=[],

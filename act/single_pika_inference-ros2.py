@@ -741,11 +741,13 @@ class RosOperator(Node):
         if self.args.use_arm_joint_state > 1:
             self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state0, True, calc_step=True)
         if self.args.use_arm_end_pose > 1:
-            self.arm_joint_state_ctrl(joint_state0_zero)
+            self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state0_zero, True, calc_step=True)
+            # self.arm_joint_state_ctrl(joint_state0_zero)
             rate_tmp = self.create_rate(1)
             rate_tmp.sleep()
             self.arm_end_pose_ctrl(end_pose0)
-            self.arm_joint_state_ctrl(joint_state0)
+            self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state0, True, calc_step=True)
+            # self.arm_joint_state_ctrl(joint_state0)
             # self.arm_end_pose_ctrl_linear_interpolation_thread(end_pose0, True, calc_step=True)
         if self.args.use_robot_base > 1:
             self.robot_base_vel_ctrl(robot_base_vel0)
@@ -781,11 +783,13 @@ class RosOperator(Node):
                             if self.args.use_arm_joint_state > 1:
                                 self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state0, True, calc_step=True)
                             if self.args.use_arm_end_pose > 1:
-                                self.arm_joint_state_ctrl(joint_state0_zero)
+                                self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state0_zero, True, calc_step=True)
+                                # self.arm_joint_state_ctrl(joint_state0_zero)
                                 rate_tmp = self.create_rate(1)
                                 rate_tmp.sleep()
                                 self.arm_end_pose_ctrl(end_pose0)
-                                self.arm_joint_state_ctrl(joint_state0)
+                                self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state0, True, calc_step=True)
+                                # self.arm_joint_state_ctrl(joint_state0)
                                 # self.arm_end_pose_ctrl_linear_interpolation_thread(end_pose0, True, calc_step=True)
                             if self.args.use_robot_base > 1:
                                 self.robot_base_vel_ctrl(robot_base_vel0)
@@ -798,7 +802,8 @@ class RosOperator(Node):
                                 self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state1, True, calc_step=True)
                             if self.args.use_arm_end_pose > 1:
                                 self.arm_end_pose_ctrl(end_pose1)
-                                self.arm_joint_state_ctrl(joint_state1)
+                                self.arm_joint_state_ctrl_linear_interpolation_thread(joint_state1, True, calc_step=True)
+                                # self.arm_joint_state_ctrl(joint_state1)
                                 # self.arm_end_pose_ctrl_linear_interpolation_thread(end_pose1, True, calc_step=True)
                             if self.args.use_robot_base > 1:
                                 self.robot_base_vel_ctrl(robot_base_vel1)
@@ -1357,38 +1362,38 @@ class RosOperator(Node):
         for i in range(len(self.args.camera_color_names)):
             closer_time_diff = math.inf
             while (self.camera_color_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.camera_color_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.camera_color_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.camera_color_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 camera_colors[i] = self.camera_color_deques[i].popleft()
         for i in range(len(self.args.camera_depth_names)):
             closer_time_diff = math.inf
             while (self.camera_depth_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.camera_depth_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.camera_depth_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.camera_depth_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 camera_depths[i] = self.camera_depth_deques[i].popleft()
         if not self.args.use_camera_color_depth_to_point_cloud:
             for i in range(len(self.args.camera_point_cloud_names)):
                 closer_time_diff = math.inf
                 while (self.camera_point_cloud_deques[i].size() > 0 and
-                    abs(rclpy.time.Time.from_msg(self.camera_point_cloud_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                    abs(rclpy.time.Time.from_msg(self.camera_point_cloud_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                     closer_time_diff = abs(rclpy.time.Time.from_msg(self.camera_point_cloud_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                     camera_point_clouds[i] = self.camera_point_cloud_deques[i].popleft()
         for i in range(len(self.args.arm_joint_state_names)):
             closer_time_diff = math.inf
             while (self.arm_joint_state_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.arm_joint_state_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.arm_joint_state_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.arm_joint_state_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 arm_joint_states[i] = self.arm_joint_state_deques[i].popleft()
         for i in range(len(self.args.arm_end_pose_names)):
             closer_time_diff = math.inf
             while (self.arm_end_pose_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.arm_end_pose_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.arm_end_pose_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.arm_end_pose_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 arm_end_poses[i] = self.arm_end_pose_deques[i].popleft()
         for i in range(len(self.args.robot_base_vel_names)):
             closer_time_diff = math.inf
             while (self.robot_base_vel_deques[i].size() > 0 and
-                   abs(rclpy.time.Time.from_msg(self.robot_base_vel_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) < closer_time_diff):
+                   abs(rclpy.time.Time.from_msg(self.robot_base_vel_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(rclpy.time.Time.from_msg(self.robot_base_vel_deques[i].left().header.stamp).nanoseconds / 1e9 - frame_time)
                 robot_base_vels[i] = self.robot_base_vel_deques[i].popleft()
 
@@ -1542,55 +1547,55 @@ def get_arguments():
                         required=False)
 
     parser.add_argument('--camera_color_names', action='store', type=str, help='camera_color_names',
-                        default=['left', 'front', 'right'],
+                        default=['pikaDepthCamera', 'pikaFisheyeCamera'],
                         required=False)
     parser.add_argument('--camera_color_parent_frame_ids', action='store', type=str, help='camera_color_parent_frame_ids',
-                        default=['camera_l_link', 'camera_f_link', 'camera_r_link'],
+                        default=['camera_link', 'camera_fisheye_link'],
                         required=False)
     parser.add_argument('--camera_color_topics', action='store', type=str, help='camera_color_topics',
-                        default=['/camera_l/color/image_raw', '/camera_f/color/image_raw', '/camera_r/color/image_raw'],
+                        default=['/camera/color/image_raw', '/camera_fisheye/color/image_raw'],
                         required=False)
     parser.add_argument('--camera_color_config_topics', action='store', type=str, help='camera_color_config_topics',
-                        default=['/camera_l/color/camera_info', '/camera_f/color/camera_info', '/camera_r/color/camera_info'],
+                        default=['/camera/color/camera_info', '/camera_fisheye/color/camera_info'],
                         required=False)
     parser.add_argument('--camera_depth_names', action='store', type=str, help='camera_depth_names',
-                        default=['left', 'front', 'right'],
+                        default=['pikaDepthCamera'],
                         required=False)
     parser.add_argument('--camera_depth_parent_frame_ids', action='store', type=str, help='camera_depth_parent_frame_ids',
-                        default=['camera_l_link', 'camera_f_link', 'camera_r_link'],
+                        default=['camera_link'],
                         required=False)
     parser.add_argument('--camera_depth_topics', action='store', type=str, help='camera_depth_topics',
-                        default=['/camera_l/aligned_depth_to_color/image_raw', '/camera_f/aligned_depth_to_color/image_raw', '/camera_r/aligned_depth_to_color/image_raw'],
+                        default=['/camera/aligned_depth_to_color/image_raw'],
                         required=False)
     parser.add_argument('--camera_depth_config_topics', action='store', type=str, help='camera_depth_config_topics',
-                        default=['/camera_l/aligned_depth_to_color/camera_info', '/camera_f/aligned_depth_to_color/camera_info', '/camera_r/aligned_depth_to_color/camera_info'],
+                        default=['/camera/aligned_depth_to_color/camera_info'],
                         required=False)
     parser.add_argument('--use_camera_color_depth_to_point_cloud', action='store', type=bool, help='use_camera_color_depth_to_point_cloud',
                         default=True,
                         required=False)
     parser.add_argument('--camera_point_cloud_names', action='store', type=str, help='camera_point_cloud_names',
-                        default=['left', 'front', 'right'],
+                        default=['pikaDepthCamera'],
                         required=False)
     parser.add_argument('--camera_point_cloud_parent_frame_ids', action='store', type=str, help='camera_point_cloud_parent_frame_ids',
-                        default=['camera_l_link', 'camera_f_link', 'camera_r_link'],
+                        default=['camera_link'],
                         required=False)
     parser.add_argument('--camera_point_cloud_topics', action='store', type=str, help='camera_point_cloud_topics',
-                        default=['/camera_l/depth/color/points', '/camera_f/depth/color/points', '/camera_r/depth/color/points'],
+                        default=['/camera/depth/color/points'],
                         required=False)
     parser.add_argument('--camera_point_cloud_config_topics', action='store', type=str, help='camera_point_cloud_config_topics',
-                        default=['/camera_l/aligned_depth_to_color/camera_info', '/camera_f/aligned_depth_to_color/camera_info', '/camera_r/aligned_depth_to_color/camera_info'],
+                        default=['/camera/aligned_depth_to_color/camera_info'],
                         required=False)
     parser.add_argument('--arm_joint_state_names', action='store', type=str, help='arm_joint_state_names',
-                        default=['left', 'right'],
+                        default=['piper'],
                         required=False)
     parser.add_argument('--arm_joint_state_topics', action='store', type=str, help='arm_joint_state_topics',
-                        default=['/puppet/joint_left', '/puppet/joint_right'],
+                        default=['/joint_states_gripper'],
                         required=False)
     parser.add_argument('--arm_end_pose_names', action='store', type=str, help='arm_end_pose_names',
-                        default=[],
+                        default=['piper'],
                         required=False)
     parser.add_argument('--arm_end_pose_topics', action='store', type=str, help='arm_end_pose_topics',
-                        default=[],
+                        default=['/piper_FK/urdf_end_pose'],
                         required=False)
     parser.add_argument('--robot_base_vel_names', action='store', type=str, help='robot_base_vel_names',
                         default=[],
@@ -1599,10 +1604,10 @@ def get_arguments():
                         default=[],
                         required=False)
     parser.add_argument('--arm_joint_state_ctrl_topics', action='store', type=str, help='arm_joint_state_ctrl_topics',
-                        default=['/joint_left_states', '/joint_right_states'],
+                        default=['/joint_states'],
                         required=False)
     parser.add_argument('--arm_end_pose_ctrl_topics', action='store', type=str, help='arm_end_pose_ctrl_topics',
-                        default=[],
+                        default=['/piper_IK/ctrl_end_pose'],
                         required=False)
     parser.add_argument('--robot_base_vel_ctrl_topic', action='store', type=str, help='robot_base_vel_ctrl_topic',
                         default='/cmd_vel',
@@ -1610,7 +1615,7 @@ def get_arguments():
     parser.add_argument('--gripper_offset', nargs='+', action='store', type=float, help='gripper_offset', default=[0], required=False)
 
     parser.add_argument('--use_camera_color', action='store', type=bool, help='use_camera_color', default=True, required=False)
-    parser.add_argument('--use_camera_depth', action='store', type=bool, help='use_camera_depth', default=True, required=False)
+    parser.add_argument('--use_camera_depth', action='store', type=bool, help='use_camera_depth', default=False, required=False)
     parser.add_argument('--camera_depth_norm_mode', action='store', type=int, help='camera_depth_norm_mode', default=3, required=False)
     parser.add_argument('--use_camera_point_cloud', action='store', type=bool, help='use_camera_point_cloud', default=False, required=False)
     parser.add_argument('--use_camera_point_cloud_rgb', action='store', type=bool, help='use_camera_point_cloud_rgb', default=True, required=False)
@@ -1618,13 +1623,13 @@ def get_arguments():
     parser.add_argument('--use_robot_base', action='store', type=int, help='use_robot_base', default=0, required=False)
     parser.add_argument('--robot_base_dim', action='store', type=int, help='robot_base_dim', default=3, required=False)
     parser.add_argument('--robot_base_loss_weight', action='store', type=float, help='robot_base_loss_weight', default=1.0, required=False)
-    parser.add_argument('--use_arm_joint_state', action='store', type=int, help='use_arm_joint_state', default=3, required=False)
+    parser.add_argument('--use_arm_joint_state', action='store', type=int, help='use_arm_joint_state', default=0, required=False)
     parser.add_argument('--arm_joint_state_dim', action='store', type=int, help='arm_joint_state_dim', default=7, required=False)
     parser.add_argument('--arm_joint_state_loss_weight', action='store', type=float, help='arm_joint_state_loss_weight', default=1.0, required=False)
-    parser.add_argument('--use_arm_end_pose', action='store', type=int, help='use_arm_end_pose', default=0, required=False)
-    parser.add_argument('--use_arm_end_pose_incre', action='store', type=bool, help='use_arm_end_pose_incre', default=False, required=False)
+    parser.add_argument('--use_arm_end_pose', action='store', type=int, help='use_arm_end_pose', default=3, required=False)
+    parser.add_argument('--use_arm_end_pose_incre', action='store', type=bool, help='use_arm_end_pose_incre', default=True, required=False)
     parser.add_argument('--arm_end_pose_incre_mode', action='store', type=int, help='arm_end_pose_incre_mode', default=1, required=False)
-    parser.add_argument('--arm_base_link_in_world', action='store', type=float, help='arm_base_link_in_world', default=[], required=False)
+    parser.add_argument('--arm_base_link_in_world', action='store', type=float, help='arm_base_link_in_world', default=[[0, 0, 0, 0, 0, 0]], required=False)
     parser.add_argument('--arm_end_pose_dim', action='store', type=int, help='arm_end_pose_dim', default=7, required=False)
     parser.add_argument('--arm_end_pose_loss_weight', action='store', type=float, help='arm_end_pose_loss_weight', default=1.0, required=False)
     parser.add_argument('--qpos_norm_mode', action='store', type=int, help='qpos_norm_mode', default=2, required=False)

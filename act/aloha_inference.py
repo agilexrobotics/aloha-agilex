@@ -1237,38 +1237,38 @@ class RosOperator:
         for i in range(len(self.args.camera_color_names)):
             closer_time_diff = math.inf
             while (self.camera_color_deques[i].size() > 0 and
-                   abs(self.camera_color_deques[i].left().header.stamp.to_sec() - frame_time) < closer_time_diff):
+                   abs(self.camera_color_deques[i].left().header.stamp.to_sec() - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(self.camera_color_deques[i].left().header.stamp.to_sec() - frame_time)
                 camera_colors[i] = self.camera_color_deques[i].popleft()
         for i in range(len(self.args.camera_depth_names)):
             closer_time_diff = math.inf
             while (self.camera_depth_deques[i].size() > 0 and
-                   abs(self.camera_depth_deques[i].left().header.stamp.to_sec() - frame_time) < closer_time_diff):
+                   abs(self.camera_depth_deques[i].left().header.stamp.to_sec() - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(self.camera_depth_deques[i].left().header.stamp.to_sec() - frame_time)
                 camera_depths[i] = self.camera_depth_deques[i].popleft()
         if not self.args.use_camera_color_depth_to_point_cloud:
             for i in range(len(self.args.camera_point_cloud_names)):
                 closer_time_diff = math.inf
                 while (self.camera_point_cloud_deques[i].size() > 0 and
-                    abs(self.camera_point_cloud_deques[i].left().header.stamp.to_sec() - frame_time) < closer_time_diff):
+                    abs(self.camera_point_cloud_deques[i].left().header.stamp.to_sec() - frame_time) <= closer_time_diff):
                     closer_time_diff = abs(self.camera_point_cloud_deques[i].left().header.stamp.to_sec() - frame_time)
                     camera_point_clouds[i] = self.camera_point_cloud_deques[i].popleft()
         for i in range(len(self.args.arm_joint_state_names)):
             closer_time_diff = math.inf
             while (self.arm_joint_state_deques[i].size() > 0 and
-                   abs(self.arm_joint_state_deques[i].left().header.stamp.to_sec() - frame_time) < closer_time_diff):
+                   abs(self.arm_joint_state_deques[i].left().header.stamp.to_sec() - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(self.arm_joint_state_deques[i].left().header.stamp.to_sec() - frame_time)
                 arm_joint_states[i] = self.arm_joint_state_deques[i].popleft()
         for i in range(len(self.args.arm_end_pose_names)):
             closer_time_diff = math.inf
             while (self.arm_end_pose_deques[i].size() > 0 and
-                   abs(self.arm_end_pose_deques[i].left().header.stamp.to_sec() - frame_time) < closer_time_diff):
+                   abs(self.arm_end_pose_deques[i].left().header.stamp.to_sec() - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(self.arm_end_pose_deques[i].left().header.stamp.to_sec() - frame_time)
                 arm_end_poses[i] = self.arm_end_pose_deques[i].popleft()
         for i in range(len(self.args.robot_base_vel_names)):
             closer_time_diff = math.inf
             while (self.robot_base_vel_deques[i].size() > 0 and
-                   abs(self.robot_base_vel_deques[i].left().header.stamp.to_sec() - frame_time) < closer_time_diff):
+                   abs(self.robot_base_vel_deques[i].left().header.stamp.to_sec() - frame_time) <= closer_time_diff):
                 closer_time_diff = abs(self.robot_base_vel_deques[i].left().header.stamp.to_sec() - frame_time)
                 robot_base_vels[i] = self.robot_base_vel_deques[i].popleft()
 

@@ -317,7 +317,7 @@ def get_arguments():
     parser.add_argument('--camera_color_names', action='store', type=str, help='camera_color_names', nargs='+', default=['pikaDepthCamera_l', 'pikaDepthCamera_r', 'pikaFisheyeCamera_l', 'pikaFisheyeCamera_r'], required=False)
     parser.add_argument('--use_camera_color', action='store', type=bool, help='use_camera_color', default=True, required=False)
     parser.add_argument('--camera_depth_names', action='store', type=str, help='camera_depth_names', nargs='+', default=['pikaDepthCamera_l', 'pikaDepthCamera_r'], required=False)
-    parser.add_argument('--use_camera_depth', action='store', type=bool, help='use_camera_depth', default=True, required=False)
+    parser.add_argument('--use_camera_depth', action='store', type=bool, help='use_camera_depth', default=False, required=False)
     parser.add_argument('--camera_depth_norm_mode', action='store', type=int, help='camera_depth_norm_mode', default=3, required=False)
     parser.add_argument('--camera_point_cloud_names', action='store', type=str, help='camera_point_cloud_names', nargs='+', default=['pikaDepthCamera_l', 'pikaDepthCamera_r'], required=False)
     parser.add_argument('--use_camera_point_cloud', action='store', type=bool, help='use_camera_point_cloud', default=False, required=False)

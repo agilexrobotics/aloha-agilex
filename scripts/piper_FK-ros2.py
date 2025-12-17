@@ -159,7 +159,7 @@ class RosOperator(Node):
             end_pose_msg.pose.orientation.x = xyzrpy[3]
             end_pose_msg.pose.orientation.y = xyzrpy[4]
             end_pose_msg.pose.orientation.z = xyzrpy[5]
-            end_pose_msg.pose.orientation.w = self.arm_msg.position[6]
+            end_pose_msg.pose.orientation.w = self.arm_msg.position[6] if len(self.arm_msg.position) > 6 else 0.0
             self.arm_end_pose_publisher.publish(end_pose_msg)
             x, y, z, w = quaternion_from_euler(end_pose_msg.pose.orientation.x, end_pose_msg.pose.orientation.y, end_pose_msg.pose.orientation.z)
             end_pose_msg.pose.orientation.x = x
@@ -173,7 +173,7 @@ class RosOperator(Node):
     def init_ros(self):
         if self.args.lift:
             self.lift_subscriber = self.create_subscription(JointState, f'/joint_states_single_lift', self.lift_callback, 1)
-        self.arm_joint_state_subscriber = self.create_subscription(JointState, f'/joint_states_single_gripper{self.args.index_name}', self.arm_joint_state_callback, 1)
+        self.arm_joint_state_subscriber = self.create_subscription(JointState, f'/joint_states_single{self.args.index_name}', self.arm_joint_state_callback, 1)
         self.arm_end_pose_publisher = self.create_publisher(PoseStamped, f'/piper_FK{self.args.index_name}/urdf_end_pose', 1)
         self.arm_end_pose_orient_publisher = self.create_publisher(PoseStamped, f'/piper_FK{self.args.index_name}/urdf_end_pose_orient', 1)
 

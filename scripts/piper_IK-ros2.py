@@ -201,7 +201,7 @@ class Arm_IK:
         ori_error = error_vec[3:]  # 取后3个值为姿态误差
         # 设置位置和姿态的权重
         weight_position = 1.0  # 位置权重
-        weight_orientation = 0.1  # 姿态权重
+        weight_orientation = 1.0  # 姿态权重
         # 总成本函数
         self.totalcost = casadi.sumsqr(weight_position * pos_error) + casadi.sumsqr(weight_orientation * ori_error)
         # 正则化项
@@ -327,6 +327,7 @@ class RosOperator(Node):
         joint_state_msg = JointState()
         joint_state_msg.header = Header()
         joint_state_msg.header.stamp = self.get_clock().now().to_msg()
+        joint_state_msg.name = [f"joint{i}" for i in range(1, 8)]
         joint_state_msg.position = [float(v) for v in joint_state]
         joint_state_msg.velocity = [float(1) for v in joint_state]
         joint_state_msg.effort = [float(1) for v in joint_state]
@@ -490,7 +491,7 @@ class RosOperator(Node):
         #  /piper_FK/urdf_end_pose  /piper_IK/ctrl_end_pose
         self.arm_end_pose_subscriber = self.create_subscription(PoseStamped, f'/piper_IK{self.args.index_name}/ctrl_end_pose', self.arm_end_pose_callback, 1)
         self.arm_joint_state_subscriber = self.create_subscription(JointState, f'/joint_states_single{self.args.index_name}', self.arm_joint_state_callback, 1)
-        self.arm_joint_state_publisher = self.create_publisher(JointState, f'/joint_states_gripper{self.args.index_name}', 1)
+        self.arm_joint_state_publisher = self.create_publisher(JointState, f'/joint_states{self.args.index_name}', 1)
         self.arm_end_pose_orient_publisher = self.create_publisher(PoseStamped, f'/piper_IK{self.args.index_name}/urdf_end_pose_orient', 1)
         # self.arm_control_status_publisher = self.create_publisher(ArmControlStatus, f'/arm_control_status{self.args.index_name}', 1)
         if not self.args.use_orient:
